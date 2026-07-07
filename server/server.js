@@ -1,10 +1,12 @@
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
 const pool = require('./config/db');
+const eventRoutes = require('./routes/eventRoutes');
 const app = express();
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
 
 app.get('/', (req, res) => {
   res.send('Server is running!');
