@@ -1,0 +1,31 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'attendee',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE events (
+  id SERIAL PRIMARY KEY,
+  organizer_id INT NOT NULL REFERENCES users(id),
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  location VARCHAR(200),
+  date_time TIMESTAMP NOT NULL,
+  capacity INT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE bookings (
+  id SERIAL PRIMARY KEY,
+  event_id INT NOT NULL REFERENCES events(id),
+  user_id INT NOT NULL REFERENCES users(id),
+  status VARCHAR(20) NOT NULL DEFAULT 'confirmed',
+  payment_status VARCHAR(20) NOT NULL DEFAULT 'held',
+  amount_paid DECIMAL(10,2) NOT NULL,
+  booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
