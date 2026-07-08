@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="navbar">
+    <strong>EventHive</strong>
+    <div>
+      <a href="events.html">Events</a>
+      <a href="register.html">Register</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" required>
+
+      <button type="submit">Log In</button>
+    </form>
+    <p class="error" id="errorMsg"></p>
+    <p class="link-text">Don't have an account? <a href="register.html">Register here</a></p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
