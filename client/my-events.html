@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>EventHive - My Events</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+ <div id="navbar-placeholder"></div>
+
+ <div class="events-wrapper">
+    <h1>My Events</h1>
+    <div class="event-grid" id="myEventsGrid"></div>
+
+    <div class="container" id="editFormContainer" style="display:none; margin-top: 30px;">
+      <h2>Edit Event</h2>
+      <form id="editEventForm">
+        <input type="hidden" id="editId">
+
+        <label for="editTitle">Title</label>
+        <input type="text" id="editTitle" required>
+
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" rows="3"></textarea>
+
+        <label for="editLocation">Location</label>
+        <input type="text" id="editLocation" required>
+
+        <label for="editDateTime">Date & Time</label>
+        <input type="datetime-local" id="editDateTime" required>
+
+        <label for="editCapacity">Capacity</label>
+        <input type="number" id="editCapacity" required>
+
+        <label for="editPrice">Price (ETB)</label>
+        <input type="number" id="editPrice" step="0.01" required>
+
+        <button type="submit">Save Changes</button>
+      </form>
+      <p class="error" id="editMsg"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

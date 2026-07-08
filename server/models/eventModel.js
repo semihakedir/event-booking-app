@@ -20,5 +20,32 @@ const getEventById = async (id) => {
   const result = await pool.query('SELECT * FROM events WHERE id = $1', [id]);
   return result.rows[0];
 };
+const getEventsByOrganizer = async (organizerId) => {
+  const result = await pool.query(
+    'SELECT * FROM events WHERE organizer_id = $1 ORDER BY date_time ASC',
+    [organizerId]
+  );
+  return result.rows;
+};
 
-module.exports = { createEvent, getAllEvents, getEventById };
+const cancelEvent = async (id) => {
+  const result = await pool.query(
+    `UPDATE events SET status = 'cancelled' WHERE id = $1 RETURNING *`,
+    [id]
+  );
+  return result.rows[0];
+};
+
+const getAllEventsAdmin = async () => {
+  const result = await pool.query('SELECT * FROM events ORDER BY date_time ASC');
+  return result.rows;
+};
+const updateEvent = async (id, title, description, location, dateTime, capacity, price) => {
+  const result = await pool.query(
+    `UPDATE events SET title = $1, description = $2, location = $3, date_time = $4, capacity = $5, price = $6
+     WHERE id = $7 RETURNING *`,
+    [title, description, location, dateTime, capacity, price, id]
+  );
+  return result.rows[0];
+};
+module.exports = { createEvent, getAllEvents, getEventById, getEventsByOrganizer, cancelEvent, getAllEventsAdmin, updateEvent };
