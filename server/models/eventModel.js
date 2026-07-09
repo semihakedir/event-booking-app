@@ -11,7 +11,7 @@ const createEvent = async (organizerId, title, description, location, dateTime, 
 
 const getAllEvents = async () => {
   const result = await pool.query(
-    `SELECT * FROM events WHERE status = 'active' ORDER BY date_time ASC`
+    `SELECT * FROM events WHERE status = 'active' AND date_time > NOW() ORDER BY date_time ASC`
   );
   return result.rows;
 };

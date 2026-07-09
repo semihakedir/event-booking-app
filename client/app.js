@@ -119,24 +119,31 @@ if ($('eventGrid')) {
   });
 }
  
-/* ============================
-   EVENT DETAIL + BOOKING
-============================ */
+/* EVENT DETAIL + BOOKING*/
 if ($('eventDetail')) {
   const eventId = new URLSearchParams(window.location.search).get('id');
  
-  authFetch(`${API_URL}/events/${eventId}`).then(({ data: event }) => {
-    $('eventDetail').innerHTML = `
-      <h1>${event.title}</h1>
-      <p>${event.description}</p>
-      <p><strong>Location:</strong> ${event.location}</p>
-      <p><strong>Date:</strong> ${new Date(event.date_time).toLocaleString()}</p>
-      <p><strong>Price:</strong> ${event.price} ETB</p>
-      ${token
-        ? '<button id="bookBtn">Book Ticket</button>'
-        : '<p>Please <a href="index.html">log in</a> to book this event.</p>'}
-      <p class="error" id="bookMsg"></p>
-    `;
+ authFetch(`${API_URL}/events/${eventId}`).then(({ data: event }) => {
+  const hasPassed = new Date(event.date_time) < new Date();
+
+  let bookingSection;
+  if (hasPassed) {
+    bookingSection = '<p><strong>This event has already taken place.</strong></p>';
+  } else if (!token) {
+    bookingSection = '<p>Please <a href="index.html">log in</a> to book this event.</p>';
+  } else {
+    bookingSection = '<button id="bookBtn">Book Ticket</button>';
+  }
+
+  $('eventDetail').innerHTML = `
+    <h1>${event.title}</h1>
+    <p>${event.description}</p>
+    <p><strong>Location:</strong> ${event.location}</p>
+    <p><strong>Date:</strong> ${new Date(event.date_time).toLocaleString()}</p>
+    <p><strong>Price:</strong> ${event.price} ETB</p>
+    ${bookingSection}
+    <p class="error" id="bookMsg"></p>
+  `;
  
     if ($('bookBtn')) {
       $('bookBtn').addEventListener('click', async () => {
@@ -151,9 +158,7 @@ if ($('eventDetail')) {
   });
 }
  
-/* ============================
-   MY BOOKINGS
-============================ */
+/* MY BOOKINGS */
 if ($('bookingGrid')) {
   if (!token) {
     $('bookingGrid').innerHTML = '<p>Please <a href="index.html">log in</a> to see your bookings.</p>';
@@ -182,6 +187,10 @@ if ($('createEventForm')) {
   $('createEventForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const createMsg = $('createMsg');
+    if (!token) {
+  createMsg.textContent = 'Please log in as an organizer to create events.';
+  return;
+}
  
     const { ok, data } = await authFetch(`${API_URL}/events`, {
       method: 'POST',
@@ -205,7 +214,10 @@ if ($('createEventForm')) {
  
 /* MY EVENTS (organizer) + EDIT/CANCEL */
 if ($('myEventsGrid')) {
-  authFetch(`${API_URL}/events/my-events`).then(({ ok, data: events }) => {
+  if (!token) {
+    $('myEventsGrid').innerHTML = '<p>Please <a href="index.html">log in</a> as an organizer to view your events.</p>';
+  } else {
+    authFetch(`${API_URL}/events/my-events`).then(({ ok, data: events }) => {
     if (!ok) return $('myEventsGrid').innerHTML = `<p>${events.error}</p>`;
     if (events.length === 0) return $('myEventsGrid').innerHTML = '<p>You have not created any events yet.</p>';
  
@@ -250,6 +262,7 @@ if ($('myEventsGrid')) {
     });
   });
 }
+}
  
 if ($('editEventForm')) {
   $('editEventForm').addEventListener('submit', async (e) => {
@@ -281,7 +294,10 @@ if ($('editEventForm')) {
 
 /* ADMIN PANEL */
 if ($('adminEventsGrid')) {
-  authFetch(`${API_URL}/events/admin/all`).then(({ ok, data: events }) => {
+  if (!token) {
+    $('adminEventsGrid').innerHTML = '<p>Please <a href="index.html">log in</a> as an admin to view this page.</p>';
+  } else {
+    authFetch(`${API_URL}/events/admin/all`).then(({ ok, data: events }) => {
     if (!ok) return $('adminEventsGrid').innerHTML = `<p>${events.error}</p>`;
 
     events.forEach(event => {
@@ -329,4 +345,5 @@ if ($('adminEventsGrid')) {
   });
 });
   });
+}
 }
