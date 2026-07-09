@@ -20,4 +20,12 @@ const getBookingsByUser = async (userId) => {
   return result.rows;
 };
 
-module.exports = { createBooking, getBookingsByUser };
+const countBookingsForEvent = async (eventId) => {
+  const result = await pool.query(
+    `SELECT COUNT(*) FROM bookings WHERE event_id = $1 AND status = 'confirmed'`,
+    [eventId]
+  );
+  return parseInt(result.rows[0].count);
+};
+
+module.exports = { createBooking, getBookingsByUser, countBookingsForEvent };

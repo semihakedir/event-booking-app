@@ -1,5 +1,5 @@
 const { createEvent, getAllEvents, getEventById, getEventsByOrganizer, cancelEvent, getAllEventsAdmin, updateEvent } = require('../models/eventModel');
-
+const{ countBookingsForEvent } = require('../models/bookingModel');
 const create = async (req, res) => {
   try {
     const { title, description, location, date_time, capacity, price } = req.body;
@@ -30,10 +30,17 @@ const getOne = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 const getMyEvents = async (req, res) => {
   try {
     const events = await getEventsByOrganizer(req.user.id);
-    res.json(events);
+    const eventsWithCounts = await Promise.all(
+      events.map(async (event) => {
+        const bookedCount = await countBookingsForEvent(event.id);
+        return { ...event, bookedCount };
+      })
+    );
+    res.json(eventsWithCounts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -58,7 +65,13 @@ const cancel = async (req, res) => {
 const getAllForAdmin = async (req, res) => {
   try {
     const events = await getAllEventsAdmin();
-    res.json(events);
+    const eventsWithCounts = await Promise.all(
+      events.map(async (event) => {
+        const bookedCount = await countBookingsForEvent(event.id);
+        return { ...event, bookedCount };
+      })
+    );
+    res.json(eventsWithCounts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

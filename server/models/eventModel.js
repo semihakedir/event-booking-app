@@ -37,7 +37,12 @@ const cancelEvent = async (id) => {
 };
 
 const getAllEventsAdmin = async () => {
-  const result = await pool.query('SELECT * FROM events ORDER BY date_time ASC');
+  const result = await pool.query(
+    `SELECT events.*, users.name AS organizer_name, users.email AS organizer_email
+     FROM events
+     JOIN users ON events.organizer_id = users.id
+     ORDER BY events.date_time ASC`
+  );
   return result.rows;
 };
 const updateEvent = async (id, title, description, location, dateTime, capacity, price) => {
