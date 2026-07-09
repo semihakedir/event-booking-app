@@ -31,7 +31,7 @@ The backend follows the MVC pattern. Models live in server/models and handle all
 
 Database Schema
 
-The full DDL is included in database.sql at the project root. It defines three tables. The users table stores id, name, email, password_hash, role, and created_at. The events table stores id, organizer_id as a foreign key to users, title, description, location, date_time, capacity, price, status, cancellation_reason, and created_at. The bookings table stores id, event_id as a foreign key to events, user_id as a foreign key to users, status, payment_status, amount_paid, and booked_at.
+The full DDL is included in database.sql at the project root. It defines three tables. The users table stores id, name, email, password_hash, role, and created_at. The events table stores id, organizer_id as a foreign key to users, title, description, location, date_time, capacity, price, status, cancellation_reason, and created_at. The bookings table stores id, event_id as a foreign key to events, user_id as a foreign key to users, status, payment_status, amount_paid, and booked_at.An ER diagram illustrating these relationships is available at docs/er-diagram.png.
 
 Setup and Run Instructions
 
