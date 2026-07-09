@@ -28,4 +28,11 @@ const countBookingsForEvent = async (eventId) => {
   return parseInt(result.rows[0].count);
 };
 
-module.exports = { createBooking, getBookingsByUser, countBookingsForEvent };
+const refundBookingsForEvent = async (eventId) => {
+  await pool.query(
+    `UPDATE bookings SET payment_status = 'refunded', status = 'cancelled' WHERE event_id = $1`,
+    [eventId]
+  );
+};
+
+module.exports = { createBooking, getBookingsByUser, countBookingsForEvent, refundBookingsForEvent };

@@ -17,6 +17,7 @@ CREATE TABLE events (
   capacity INT NOT NULL,
   price DECIMAL(10,2) NOT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'active',
+  cancellation_reason TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

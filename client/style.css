@@ -126,3 +126,11 @@ button:hover {
   text-decoration: none;
   font-size: 14px;
 }
+.status-cancelled {
+  color: #C0392B;
+  font-weight: 700;
+}
+.status-active {
+  color: #2F6B5E;
+  font-weight: 700;
+}

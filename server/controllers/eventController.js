@@ -1,5 +1,5 @@
 const { createEvent, getAllEvents, getEventById, getEventsByOrganizer, cancelEvent, getAllEventsAdmin, updateEvent } = require('../models/eventModel');
-const{ countBookingsForEvent } = require('../models/bookingModel');
+const{ countBookingsForEvent, refundBookingsForEvent } = require('../models/bookingModel');
 const create = async (req, res) => {
   try {
     const { title, description, location, date_time, capacity, price } = req.body;
@@ -55,11 +55,15 @@ const cancel = async (req, res) => {
       return res.status(403).json({ error: 'You can only cancel your own events' });
     }
 
-    const cancelled = await cancelEvent(req.params.id);
+    const { reason } = req.body || {};
+    const cancelled = await cancelEvent(req.params.id, reason || null);
+    await refundBookingsForEvent(req.params.id);
+
     res.json({ message: 'Event cancelled', event: cancelled });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+ } catch (err) {
+  console.error(err);
+  res.status(500).json({ error: err.message });
+}
 };
 
 const getAllForAdmin = async (req, res) => {

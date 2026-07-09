@@ -216,7 +216,8 @@ if ($('myEventsGrid')) {
         <h3>${event.title}</h3>
         <p>${event.location}</p>
         <p>${new Date(event.date_time).toLocaleDateString()}</p>
-        <p><strong>Status:</strong> ${event.status}</p>
+        <p><strong>Status:</strong> <span class="status-${event.status}">${event.status}</span></p>
+        ${event.status === 'cancelled' && event.cancellation_reason ? `<p><strong>Cancellation reason:</strong> ${event.cancellation_reason}</p>` : ''}
         <p><strong>Booked:</strong> ${event.bookedCount} / ${event.capacity}</p>
         ${event.status === 'active' ? `
           <button class="editBtn" data-id="${event.id}">Edit</button>
@@ -291,18 +292,41 @@ if ($('adminEventsGrid')) {
         <p>${event.location}</p>
         <p>${new Date(event.date_time).toLocaleDateString()}</p>
         <p><strong>Organizer:</strong> ${event.organizer_email}</p>
-        <p><strong>Status:</strong> ${event.status}</p>
+        <p><strong>Status:</strong> <span class="status-${event.status}">${event.status}</span></p>
         <p><strong>Booked:</strong> ${event.bookedCount} / ${event.capacity}</p>
         ${event.status === 'active' ? `<button class="adminCancelBtn" data-id="${event.id}">Cancel Event</button>` : ''}
       `;
       $('adminEventsGrid').appendChild(card);
     });
 
-    document.querySelectorAll('.adminCancelBtn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const { ok } = await authFetch(`${API_URL}/events/${btn.dataset.id}/cancel`, { method: 'PATCH' });
-        if (ok) location.reload();
-      });
+   document.querySelectorAll('.adminCancelBtn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const reasonOptions = [
+      'Event is not genuine / fraudulent',
+      'Violates platform policies',
+      'Inappropriate or harmful content',
+      'Other'
+    ];
+    let reason = prompt(
+      `Select a reason (type the number):\n${reasonOptions.map((r, i) => `${i + 1}. ${r}`).join('\n')}`
+    );
+
+    const index = parseInt(reason) - 1;
+    if (index >= 0 && index < reasonOptions.length) {
+      reason = reasonOptions[index];
+      if (reason === 'Other') {
+        reason = prompt('Please specify the reason:') || 'Other';
+      }
+    } else {
+      reason = 'Not specified';
+    }
+
+    const { ok } = await authFetch(`${API_URL}/events/${btn.dataset.id}/cancel`, {
+      method: 'PATCH',
+      body: JSON.stringify({ reason })
     });
+    if (ok) location.reload();
+  });
+});
   });
 }

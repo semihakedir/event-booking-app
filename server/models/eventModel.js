@@ -28,10 +28,10 @@ const getEventsByOrganizer = async (organizerId) => {
   return result.rows;
 };
 
-const cancelEvent = async (id) => {
+const cancelEvent = async (id, reason) => {
   const result = await pool.query(
-    `UPDATE events SET status = 'cancelled' WHERE id = $1 RETURNING *`,
-    [id]
+    `UPDATE events SET status = 'cancelled', cancellation_reason = $2 WHERE id = $1 RETURNING *`,
+    [id, reason]
   );
   return result.rows[0];
 };
